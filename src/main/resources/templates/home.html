@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layouts/default}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="description" name="BoJo AI - Api & web archive for the dumbest things Boris Johnson has ever said."/>
+    <link href="/" rel="canonical"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="center">
+        <h1>BoJo</h1>
+        <p>Api & web archive for the dumbest things Boris Johnson has ever said.</p>
+    </section>
+    <hr class="poo">
+    <section class="center">
+        <p>Search the dump</p>
+        <form action="/search/quote" method="GET" class="center">
+            <input type="text" name="query" pattern=".{3,}" required title="3 characters minimum">
+            <input type="submit" value="Search" class="btn">
+        </form>
+    </section>
+    <section class="center">
+        <p>See what BoJo thinks about:</p>
+        <ul class="inline comma-separated">
+            <li th:each="tag, i : ${tags}"><a th:href="'/tag/' + ${tag.value}" th:text="${tag.value}"/></li>
+        </ul>
+    </section>
+</div>
+</body>
+</html>

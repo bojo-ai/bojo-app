@@ -1,0 +1,232 @@
+---
+version: 2
+
+jobs:
+  build:
+    environment:
+      # Configure the JVM and Gradle to avoid OOM errors
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle.kts" }}
+      - run:
+          name: Install dependencies
+          command: ./gradlew build -x test
+      - save_cache:
+          paths:
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ checksum "build.gradle.kts" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
+  release-production:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - setup_remote_docker
+      - run:
+          name: Log into docker registry
+          command: |
+            docker login --username=_ --password=${HEROKU_REGISTRY_TOKEN} registry.heroku.com
+      - run:
+          name: Build and push image
+          command: |
+            ./gradlew clean dockerTagHerokuProduction
+            docker push registry.heroku.com/bojo-prod/web
+      - run:
+          name: Release
+          command: |
+            export IMAGE_ID=$(docker inspect registry.heroku.com/bojo-prod/web --format={{.Id}})
+            curl -X PATCH \
+              https://api.heroku.com/apps/bojo-prod/formation \
+              -H 'Accept: application/vnd.heroku+json; version=3.docker-releases' \
+              -H "Authorization: Bearer ${HEROKU_REGISTRY_TOKEN}" \
+              -H 'Content-Type: application/json' \
+              -d "{\"updates\":[{\"type\":\"web\",\"docker_image\":\"${IMAGE_ID}\"}]}"
+      - run:
+          name: Remove docker credentials
+          command: |
+            rm "${HOME}/.docker/config.json"
+
+  release-staging:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - setup_remote_docker
+      - run:
+          name: Log into docker registry
+          command: |
+            docker login --username=_ --password=${HEROKU_REGISTRY_TOKEN} registry.heroku.com
+      - run:
+          name: Build and push image
+          command: |
+            ./gradlew clean dockerTagHerokuStaging
+            docker push registry.heroku.com/bojo-stage/web
+      - run:
+          name: Release
+          command: |
+            export IMAGE_ID=$(docker inspect registry.heroku.com/bojo-stage/web --format={{.Id}})
+            curl -X PATCH \
+              https://api.heroku.com/apps/bojo-stage/formation \
+              -H 'Accept: application/vnd.heroku+json; version=3.docker-releases' \
+              -H "Authorization: Bearer ${HEROKU_REGISTRY_TOKEN}" \
+              -H 'Content-Type: application/json' \
+              -d "{\"updates\":[{\"type\":\"web\",\"docker_image\":\"${IMAGE_ID}\"}]}"
+      - run:
+          name: Remove docker credentials
+          command: |
+            rm "${HOME}/.docker/config.json"
+
+  test-integration:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run integration test
+          command: ./gradlew integrationTest
+
+  test-postman:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - setup_remote_docker
+      - run:
+          name: Run postman test
+          command: |
+            export APP_GROUP="ai.bojo"
+
+            ./gradlew dockerTag
+
+            export DOCKER_NET="${APP_GROUP}-net"
+            docker network create -d bridge $DOCKER_NET
+
+            docker run \
+                --rm \
+                --detach \
+                --env "SPRING_PROFILES_ACTIVE=h2" \
+                --hostname app \
+                --name app \
+                --network=$DOCKER_NET \
+                -p 8080:8080 \
+                "${APP_GROUP}/app:$CIRCLE_SHA1"
+
+            sleep 10
+
+            # Check if all container are running
+            docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Networks}}"
+
+            # It's not possible to use volume mounting with the docker executor in CircleCI.
+            # So we create a dummy container which will hold a volume with config, copy our
+            # postman files into this volume, and start the newman runner using this volume.
+            docker create -v /etc/newman --name newman-config --network=$DOCKER_NET alpine:3.4 /bin/true
+            docker cp ./postman/ai.bojo.postman_collection.json newman-config:/etc/newman
+            docker cp ./postman/docker.postman_environment.json newman-config:/etc/newman
+            docker run --volumes-from newman-config --name newman --network=$DOCKER_NET --rm postman/newman \
+              run "/etc/newman/ai.bojo.postman_collection.json" \
+              --environment="/etc/newman/docker.postman_environment.json"
+
+  test-unit:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run unit test
+          command: ./gradlew test
+
+workflows:
+  version: 2
+
+  test_and_release_staging:
+    jobs:
+      - build
+      - test-unit:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+      - test-integration:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+      - test-postman:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: master
+      - release-staging:
+          requires:
+            - test-integration
+            - test-postman
+            - test-unit
+          filters:
+            branches:
+              ignore: master
+
+  test_and_release_production:
+    jobs:
+      - build
+      - test-unit:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - test-integration:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - test-postman:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+      - release-staging:
+          requires:
+            - test-integration
+            - test-postman
+            - test-unit
+          filters:
+            branches:
+              only: master
+      - release-production:
+          requires:
+            - test-integration
+            - test-postman
+            - test-unit
+          filters:
+            branches:
+              only: master
