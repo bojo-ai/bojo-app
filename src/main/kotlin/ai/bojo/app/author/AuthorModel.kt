@@ -4,7 +4,7 @@ import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
 import java.sql.Timestamp
 
-@Relation(collectionRelation = "author")
+@Relation(collectionRelation = "authors")
 data class AuthorModel(
         val authorId: String? = null,
         val bio: String? = null,

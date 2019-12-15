@@ -3,7 +3,7 @@ package ai.bojo.app.tag
 import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
 
-@Relation(collectionRelation = "tag")
+@Relation(collectionRelation = "tags")
 class TagModel(
         val createdAt: java.sql.Timestamp? = null,
         val tagId: String? = null,

@@ -3,7 +3,7 @@ package ai.bojo.app.quote_source
 import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.core.Relation
 
-@Relation(collectionRelation = "source")
+@Relation(collectionRelation = "sources")
 class QuoteSourceModel(
         var createdAt: java.sql.Timestamp? = null,
         var filename: String? = null,
