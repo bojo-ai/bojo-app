@@ -1,4 +1,4 @@
-# BOJO.AI
+# BOJO.AI [![CircleCI](https://circleci.com/gh/bojo-ai/bojo-app.svg?style=svg)](https://circleci.com/gh/bojo-ai/bojo-app)
 
 Api & web archive for the dumbest things BoJo has ever said.
 
