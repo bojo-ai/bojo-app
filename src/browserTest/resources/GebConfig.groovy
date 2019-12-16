@@ -1,5 +1,3 @@
-import org.openqa.selenium.chrome.ChromeDriver
-
 /* See: http://www.gebish.org/manual/current/#configuration */
 def env = System.getenv()
 

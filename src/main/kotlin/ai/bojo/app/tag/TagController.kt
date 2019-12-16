@@ -19,6 +19,20 @@ class TagController(
     @ResponseBody
     @RequestMapping(
             headers = [
+                "${HttpHeaders.ACCEPT}=${MediaType.APPLICATION_JSON_VALUE}"
+            ],
+            method = [RequestMethod.POST],
+            produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun create(@RequestBody tag: TagEntity): TagModel {
+        val entity = repository.saveAndFlush(tag)
+
+        return assembler.toModel(entity)
+    }
+
+    @ResponseBody
+    @RequestMapping(
+            headers = [
                 "${HttpHeaders.ACCEPT}=${MediaType.APPLICATION_JSON_VALUE}",
                 "${HttpHeaders.ACCEPT}=$HAL_JSON_VALUE"
             ],

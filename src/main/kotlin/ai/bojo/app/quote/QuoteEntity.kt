@@ -1,9 +1,9 @@
 package ai.bojo.app.quote
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import ai.bojo.app.author.AuthorEntity
 import ai.bojo.app.quote_source.QuoteSourceEntity
 import ai.bojo.app.tag.TagEntity
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.sql.Timestamp
 import javax.persistence.*
 

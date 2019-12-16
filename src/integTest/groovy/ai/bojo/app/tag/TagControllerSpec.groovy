@@ -5,14 +5,31 @@ import ai.bojo.app.exception.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import spock.lang.Stepwise
 import spock.lang.Subject
 
 @SpringBootTest
+@Stepwise
 class TagControllerSpec extends BaseSpecification {
 
     @Autowired
     @Subject
     TagController controller
+
+    def 'should create a new TagEntity'() {
+        given:
+        def tag = new TagEntity()
+        tag.value = 'Jeremy Corbyn'
+
+        when:
+        def response = controller.create(tag)
+
+        then:
+        response.createdAt != null
+        response.tagId != null
+        response.value == 'Jeremy Corbyn'
+        response.updatedAt != null
+    }
 
     def 'should find "TagEntity" by id'() {
         given:
@@ -50,8 +67,8 @@ class TagControllerSpec extends BaseSpecification {
         def response = controller.findAll(acceptHeader)
 
         then:
-        response.count == 1
+        response.count == 2
         response.embedded != null
-        response.total == 1
+        response.total == 2
     }
 }
