@@ -943,6 +943,140 @@
 					"response": []
 				},
 				{
+					"name": "/tag",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "081927c6-f107-4298-bc63-9c70d474ccf0",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Headers are correct\", function () {",
+									"    pm.response.to.be.header(",
+									"        \"Access-Control-Allow-Origin\",",
+									"        \"*\"",
+									"    );",
+									"    pm.response.to.be.header(",
+									"        \"Access-Control-Allow-Credentials\",",
+									"        \"true\"",
+									"    );",
+									"    pm.response.to.be.header(",
+									"        \"Content-Type\",",
+									"        \"application/json\"",
+									"    );",
+									"});",
+									"",
+									"pm.test('Schema is valid', function () {",
+									"    const schema = {",
+									"        \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+									"        \"type\": \"object\",",
+									"        \"properties\": {",
+									"            \"created_at\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"tag_id\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"updated_at\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"value\": {",
+									"                \"type\": \"string\"",
+									"            },",
+									"            \"_links\": {",
+									"                \"type\": \"object\",",
+									"                \"properties\": {",
+									"                    \"self\": {",
+									"                        \"type\": \"object\",",
+									"                        \"properties\": {",
+									"                            \"href\": {",
+									"                                \"type\": \"string\"",
+									"                            }",
+									"                        },",
+									"                        \"required\": [",
+									"                            \"href\"",
+									"                        ]",
+									"                    }",
+									"                },",
+									"                \"required\": [",
+									"                    \"self\"",
+									"                ]",
+									"            }",
+									"        },",
+									"        \"required\": [",
+									"            \"created_at\",",
+									"            \"tag_id\",",
+									"            \"updated_at\",",
+									"            \"value\",",
+									"            \"_links\"",
+									"        ]",
+									"    };",
+									"",
+									"    pm.expect(tv4.validate(",
+									"        pm.response.json(),",
+									"        schema",
+									"    )).to.be.true;",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Origin",
+								"type": "text",
+								"value": "*"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": \"A random tag {{$guid}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tag",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tag"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/tag/{{tag}}",
 					"event": [
 						{
@@ -1055,6 +1189,28 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "41faa433-3290-4177-82d1-64f21077ff50",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "950868b1-419c-4ff6-955d-0d250ba59441",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"protocolProfileBehavior": {}
