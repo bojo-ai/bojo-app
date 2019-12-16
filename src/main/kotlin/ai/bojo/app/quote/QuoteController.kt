@@ -18,6 +18,20 @@ class QuoteController(
     @ResponseBody
     @RequestMapping(
             headers = [
+                "${HttpHeaders.ACCEPT}=${MediaType.APPLICATION_JSON_VALUE}"
+            ],
+            method = [RequestMethod.POST],
+            produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun create(@RequestBody quote: QuoteEntity): QuoteModel {
+        val entity = repository.saveAndFlush(quote)
+
+        return assembler.toModel(entity)
+    }
+
+    @ResponseBody
+    @RequestMapping(
+            headers = [
                 "${HttpHeaders.ACCEPT}=$HAL_JSON_VALUE",
                 "${HttpHeaders.ACCEPT}=${MediaType.APPLICATION_JSON_VALUE}",
                 "${HttpHeaders.ACCEPT}=${MediaType.TEXT_HTML_VALUE}"

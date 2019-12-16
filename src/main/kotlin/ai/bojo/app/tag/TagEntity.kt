@@ -22,10 +22,10 @@ open class TagEntity(
         @get:OneToMany(fetch = FetchType.LAZY)
         open var quotes: List<QuoteEntity>? = emptyList(),
 
-        @get:Id
-        @get:GenericGenerator(name = "slug_id", strategy = "ai.bojo.app.hibernate.SlugIdGenerator")
-        @get:GeneratedValue(generator = "slug_id")
         @get:Column(name = "tag_id", nullable = false, insertable = false, updatable = false)
+        @get:GeneratedValue(generator = "slug_id")
+        @get:GenericGenerator(name = "slug_id", strategy = "ai.bojo.app.hibernate.SlugIdGenerator")
+        @get:Id
         open var tagId: String? = null,
 
         @get:Basic

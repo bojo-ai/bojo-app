@@ -29,6 +29,8 @@ class SecurityConfig
     override fun configure(http: HttpSecurity?) {
         http
                 ?.authorizeRequests()
+                ?.antMatchers(HttpMethod.POST, Url.QUOTE)
+                ?.hasRole("USER")
                 ?.antMatchers(HttpMethod.POST, Url.TAG)
                 ?.hasRole("USER")
                 ?.and()
