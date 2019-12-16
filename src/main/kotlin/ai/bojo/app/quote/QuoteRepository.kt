@@ -10,7 +10,7 @@ import java.util.*
 @Repository
 interface QuoteRepository : JpaRepository<QuoteEntity, String> {
 
-    fun findByValueContaining(query: String, pageable: Pageable): Page<QuoteEntity>
+    fun findByValueContainingIgnoreCase(query: String, pageable: Pageable): Page<QuoteEntity>
 
     @Query(
             value = "SELECT q.* FROM quote q ORDER BY RANDOM() LIMIT 1",

@@ -42,7 +42,7 @@ class SearchController(
             @RequestParam(value = "page", defaultValue = "0") pageNumber: Int
     ): Any {
         val page: Pageable = PageRequest.of(pageNumber, 10)
-        val result: Page<QuoteEntity> = repository.findByValueContaining(query, page)
+        val result: Page<QuoteEntity> = repository.findByValueContainingIgnoreCase(query, page)
         val model: PageModel = assembler.toModel(result)
 
         val linkBuilder: WebMvcLinkBuilder = linkTo(this::class.java)
