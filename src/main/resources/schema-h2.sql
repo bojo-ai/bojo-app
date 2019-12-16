@@ -66,10 +66,10 @@ COMMENT ON COLUMN quote_source.remarks         IS 'Additional remarks of the sou
 
 CREATE TABLE IF NOT EXISTS quote (
     appeared_at     TIMESTAMP,
-    author_id       SLUGID REFERENCES author (author_id) ON DELETE SET NULL,
+    author_id       SLUGID REFERENCES author (author_id) ON DELETE CASCADE,
     created_at      TIMESTAMP,
     quote_id        SLUGID PRIMARY KEY,
-    quote_source_id SLUGID REFERENCES quote_source (quote_source_id) ON DELETE SET NULL,
+    quote_source_id SLUGID REFERENCES quote_source (quote_source_id) ON DELETE CASCADE,
     updated_at      TIMESTAMP,
     value           TEXT
 );

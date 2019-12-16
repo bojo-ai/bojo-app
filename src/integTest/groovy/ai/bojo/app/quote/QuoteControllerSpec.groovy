@@ -19,7 +19,7 @@ class QuoteControllerSpec extends BaseSpecification {
     QuoteController controller
 
     def 'should create a new QuoteEntity'() {
-        given:9
+        given:
         def author = new AuthorEntity(name: 'Boris', slug: 'boris')
         def appearedAt = new Timestamp(new Date().time)
         def source = new QuoteSourceEntity(url: 'https://www.telegraph.co.uk/news/2016/05/14/boris-johnson-the-eu-wants-a-superstate-just-as-hitler-did/')
