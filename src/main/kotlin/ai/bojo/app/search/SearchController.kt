@@ -56,7 +56,7 @@ class SearchController(
             return ModelAndView("search")
                     .addObject("model", model)
                     .addObject("query", query)
-                    .addObject("result", result)
+                    .addObject("page", result)
         }
 
         return model

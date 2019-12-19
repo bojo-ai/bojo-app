@@ -1,27 +1,32 @@
 <!DOCTYPE html>
-<html lang="en" layout:decorate="~{layouts/default}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" layout:decorate="~{layouts/default}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta content="description" name="BoJo AI - Api & web archive for the dumbest things Boris Johnson has ever said."/>
     <link href="/" rel="canonical"/>
 </head>
 <body>
-<div layout:fragment="content">
-    <section class="center">
-        <h1>BoJo</h1>
-        <p>Api & web archive for the dumbest things Boris Johnson has ever said.</p>
+<div layout:fragment="content"
+     class="leading-normal text-grey-dark max-w-screen-md mx-auto pt-16 relative text-center text-xl">
+    <section class="mt-16 mb-16">
+        <div th:replace="fragment/quote :: quote(${quote})"/>
     </section>
-    <hr class="poo">
-    <section class="center">
-        <p>Search the dump</p>
-        <form action="/search/quote" method="GET" class="center">
-            <input type="text" name="query" pattern=".{3,}" required title="3 characters minimum">
-            <input type="submit" value="Search" class="btn">
-        </form>
+    <hr class="uk-flag">
+    <section class="mt-16 mb-6">
+        <h1>
+            <span class="font-semibold">bojo.ai</span> - api & web archive for the
+            dumbest things Boris Johnson has ever said.
+        </h1>
     </section>
-    <section class="center">
-        <p>See what BoJo thinks about:</p>
-        <ul class="inline comma-separated">
-            <li th:each="tag, i : ${tags}"><a th:href="'/tag/' + ${tag.value}" th:text="${tag.value}"/></li>
+    <section class="mt-6 mb-6">
+        <div th:insert="fragment/search.html"/>
+    </section>
+    <section class="mt-6 mb-16">
+        <ul>
+            <li class="inline-block mb-4" th:each="tag, i : ${tags}">
+                <a class="bg-purple-700 hover:bg-purple-300 text-white text-sm font-bold py-2 px-4 rounded-full"
+                   th:href="'/tag/' + ${tag.value}" th:text="${tag.value}"/>
+            </li>
         </ul>
     </section>
 </div>

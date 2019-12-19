@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="list(page)">
+    <div class="mt-16 mb-16" th:each="quote : ${page.content}">
+        <div th:replace="fragment/quote.html :: quote(${quote})"/>
+    </div>
+</div>
+
+</body>
+</html>
+
+

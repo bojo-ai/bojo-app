@@ -22,17 +22,21 @@ class RandomControllerSpec extends BaseSpecification {
         res.andExpect(status().isOk())
 
         and: 'headers are correct'
-        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, 'true'))
-        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, '*'))
-        res.andExpect(header().string(HttpHeaders.CONTENT_TYPE, acceptHeader))
+        res.andExpect {
+            header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, 'true')
+            header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, '*')
+            header().string(HttpHeaders.CONTENT_TYPE, acceptHeader)
+        }
 
         and: 'body has a quote'
-        res.andExpect(jsonPath('$.appeared_at').hasJsonPath())
-        res.andExpect(jsonPath('$.created_at').hasJsonPath())
-        res.andExpect(jsonPath('$.quote_id').hasJsonPath())
-        res.andExpect(jsonPath('$.tags').hasJsonPath())
-        res.andExpect(jsonPath('$.updated_at').hasJsonPath())
-        res.andExpect(jsonPath('$.value').hasJsonPath())
+        res.andExpect {
+            jsonPath('$.appeared_at').hasJsonPath()
+            jsonPath('$.created_at').hasJsonPath()
+            jsonPath('$.quote_id').hasJsonPath()
+            jsonPath('$.tags').hasJsonPath()
+            jsonPath('$.updated_at').hasJsonPath()
+            jsonPath('$.value').hasJsonPath()
+        }
 
         where:
         acceptHeader << [

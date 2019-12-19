@@ -7,22 +7,11 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <section>
-        <h1 class="center">
-            <small>What Boris Johnson thinks about: </small>
-            <span th:text="${tag.value}"></span>
-        </h1>
-
-        <blockquote th:each="quote : ${tag.quotes}" cite="'/quote/' + ${quote.quoteId}">
-            <p th:text="${quote.value}"/>
-            <footer> - <cite>
-                <a th:href="'/quote/' + ${quote.quoteId}">
-                    <span th:text="${#calendars.day(quote.appearedAt)}"/>
-                    <span th:text="${#calendars.monthName(quote.appearedAt)}"/>
-                    <span th:text="${#calendars.year(quote.appearedAt)}"/>
-                </a></cite>
-            </footer>
-        </blockquote>
+    <section class="mt-16 mb-16">
+        <h1 class="text-xl text-center">What Boris Johnson thinks about: <span class="font-semibold" th:text="${tag.value}"/></h1>
+    </section>
+    <section class="mt-16 mb-16" th:each="quote : ${tag.quotes}">
+        <div th:replace="fragment/quote.html :: quote(${quote})"/>
     </section>
 </div>
 </body>

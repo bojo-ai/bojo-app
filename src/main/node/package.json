@@ -1,0 +1,21 @@
+{
+  "name": "bojo-app",
+  "version": "1.0.0",
+  "description": "Api & web archive for the dumbest things BoJo has ever said.",
+  "scripts": {
+    "build": "postcss app/css/style.css --output .dist/css/style.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bojo-ai/bojo-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bojo-ai/bojo-app/issues"
+  },
+  "homepage": "https://github.com/bojo-ai/bojo-app#readme",
+  "devDependencies": {
+    "autoprefixer": "^9.7.3",
+    "postcss-cli": "^6.1.3",
+    "tailwindcss": "^1.1.4"
+  }
+}

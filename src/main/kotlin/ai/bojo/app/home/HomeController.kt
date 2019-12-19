@@ -1,6 +1,7 @@
 package ai.bojo.app.home
 
 import ai.bojo.app.Url
+import ai.bojo.app.quote.QuoteRepository
 import ai.bojo.app.tag.TagModelAssembler
 import ai.bojo.app.tag.TagRepository
 import org.springframework.http.HttpHeaders
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView
 
 @Controller
 class HomeController(
+        val quoteRepository: QuoteRepository,
         val tagModelAssembler: TagModelAssembler,
         val tagRepository: TagRepository
 ) {
@@ -23,10 +25,12 @@ class HomeController(
             value = [Url.INDEX]
     )
     fun get(): ModelAndView {
+        val quote = quoteRepository.randomQuote().get()
         val tags = tagRepository.findAll()
         val tagModels = tagModelAssembler.toCollectionModel(tags)
 
         return ModelAndView("home")
+                .addObject("quote", quote)
                 .addObject("tags", tagModels.content)
     }
 }

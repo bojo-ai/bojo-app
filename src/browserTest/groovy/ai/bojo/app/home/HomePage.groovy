@@ -11,7 +11,7 @@ class HomePage extends Page {
             $("form[action='${Url.SEARCH_QUOTE}']")
         }
         searchInputField() { searchForm.find('input[name="query"]') }
-        searchSubmitButton() { searchForm.find('input[type="submit"]') }
+        searchSubmitButton() { searchForm.find('button[type="submit"]') }
     }
 
     static at = {

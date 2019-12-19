@@ -10,31 +10,35 @@
     <link href="/css/style.css" rel="stylesheet" type="text/css"/>
     <link href="/img/favicon.ico" rel="icon" type="image/x-icon"/>
 </head>
-<body>
-<div class="wrapper">
+<body class="markdown font-sans text-black antialiased leading-tight bg-grey-lighter">
+<div class="w-1/3 m-auto">
     <header>
         <h1>
-            <a class="hvr-buzz-out" href="/" title="BoJo AI - Api & web archive for the dumbest things Boris Johnson has ever said.">
-                <img alt="BoJo AI - Api & web archive for the dumbest things Boris Johnson has ever said." src="/img/bojo_850x850.jpg"/>
+            <a class="flex justify-center" href="/"
+               title="BoJo AI - Api & web archive for the dumbest things Boris Johnson has ever said.">
+                <img alt="BoJo AI - Api & web archive for the dumbest things Boris Johnson has ever said." class="h-64"
+                     src="/img/bojo_850x850.jpg"/>
             </a>
         </h1>
     </header>
     <div id="content" layout:fragment="content"/>
-    <footer>
-        <hr>
-        <small>bojo.ai - Api & web archive for the dumbest things Boris Johnson has ever said.</small>
-        <small>
-            <a rel="nofollow" href="/privacy">Privacy Statement</a>
-            <a href="mailto:m@matchilling.com">Contact</a>
-        </small>
-        <a class="btn small twitter" href="https://twitter.com/MatChilling" target="_blank"><i></i><span>Twitter</span></a>
-        <a class="btn small github" href="https://github.com/bojo-ai" target="_blank"><i></i><span>GitHub</span></a>
-        <a class="btn small homepage" href="https://www.matchilling.com" target="_blank" title="Mathias Schilling"><i></i><span></span></a>
-        <small>
-            <b>Legal disclaimer:</b> This website and its creators are not affiliated with Boris Johnson or any
+    <hr>
+    <footer class="w-1/2 m-auto mt-6 mb-16 text-center">
+        <p class="font-light text-sm text-gray-500 mt-5">bojo.ai - Api & web archive for the dumbest things Boris Johnson has ever said.</p>
+        <p class="text-sm text-gray-500 mt-5 uppercase">
+            <a href="https://www.matchilling.com" target="_blank" title="Mathias Schilling">Contact</a>
+            <a href="https://twitter.com/MatChilling" target="_blank">Twitter</a>
+            <a href="https://github.com/bojo-ai" target="_blank">GitHub</a>
+        </p>
+        </p>
+        <p class="font-light text-sm text-gray-500 mt-5">
+            Legal disclaimer: This website and its creators are not affiliated with Boris Johnson or any
             affiliated corporation. All products, and brands mentioned on this website are the respective trademarks and
             copyrights of their owners.
-        </small>
+        </p>
+        <p class="font-light text-sm text-gray-500 mt-5">
+            <a rel="nofollow" href="/privacy">Privacy Statement</a>
+        </p>
     </footer>
 </div>
 

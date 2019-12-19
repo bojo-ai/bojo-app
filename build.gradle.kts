@@ -1,7 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.moowork.gradle.node.npm.NpmTask
 
 plugins {
     id("com.energizedwork.webdriver-binaries") version "1.4"
+    id("com.github.node-gradle.node") version "2.2.0"
     id("com.palantir.docker") version "0.22.1"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
     id("org.gradle.groovy")
@@ -99,6 +101,10 @@ tasks {
         }
     }
 
+    clean {
+        delete(file("$projectDir/src/main/node/node_modules"))
+    }
+
     docker {
         val bootJar = bootJar.get()
         val imageName = "$group/$appName"
@@ -116,6 +122,41 @@ tasks {
         buildArgs(
                 mapOf("JAR_FILE" to bootJar.archiveFileName.get())
         )
+    }
+
+    node {
+        // Version of node to use.
+        version = "12.14.0"
+
+        // Version of npm to use.
+        npmVersion = "6.13.4"
+
+        // If true, it will download node using above parameters.
+        // If false, it will try to use globally installed node.
+        download = true
+
+        nodeModulesDir = file("$projectDir/src/main/node/node_modules")
+    }
+
+    processResources{
+        dependsOn("processNodeResources")
+    }
+
+    register<Copy>("processNodeResources") {
+        description = "Processes node resources."
+        group = "other"
+
+        from("$projectDir/src/main/node/.dist/css/")
+        into("$buildDir/resources/main/static/css/")
+
+        dependsOn("buildNode")
+    }
+
+    register<NpmTask>("buildNode") {
+        group = "build"
+
+        dependsOn("npm_install")
+        setArgs(listOf("run", "build"))
     }
 
     register<Test>("browserTest") {

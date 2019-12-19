@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 
 @ActiveProfiles("h2")
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(webEnvironment  = SpringBootTest.WebEnvironment.RANDOM_PORT)
 abstract class BaseSpecification extends Specification {
 
     @Autowired

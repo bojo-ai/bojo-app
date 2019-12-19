@@ -93,7 +93,7 @@ class QuoteControllerSpec extends BaseSpecification {
         res.andExpect(jsonPath('$.appeared_at').hasJsonPath())
         res.andExpect(jsonPath('$.created_at').hasJsonPath())
         res.andExpect(jsonPath('$.quote_id').value(id))
-        res.andExpect(jsonPath('$.tags').value(['Music']))
+        res.andExpect(jsonPath('$.tags').value(['Music', 'Elvis']))
         res.andExpect(jsonPath('$.updated_at').hasJsonPath())
         res.andExpect(jsonPath('$.value').value('I have as much chance of becoming Prime Minister as of being decapitated by a frisbee or of finding Elvis.'))
 

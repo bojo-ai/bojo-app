@@ -17,8 +17,10 @@ INSERT INTO public.quote (appeared_at, author_id, created_at, quote_id, quote_so
 --- TABLES - TAG --
 -------------------
 INSERT INTO public.tag (created_at, updated_at, tag_id, value) VALUES ('2016-11-20 01:32:02.227494','2016-11-20 01:32:02.227494', 'c1dIgMTURW-LllIZWSBESa', 'Music');
+INSERT INTO public.tag (created_at, updated_at, tag_id, value) VALUES ('2016-11-20 01:32:02.227494','2016-11-20 01:32:02.227494', 'iI1rLZMjS4kN_XDIva9IMA', 'Elvis');
 
 -------------------------
 --- TABLES - TAG_QUOTE --
 -------------------------
 INSERT INTO public.quote_tag (tag_id, quote_id) VALUES ('c1dIgMTURW-LllIZWSBESa', 'c0D_6QSvTdC8t95ALENRBg');
+INSERT INTO public.quote_tag (tag_id, quote_id) VALUES ('iI1rLZMjS4kN_XDIva9IMA', 'c0D_6QSvTdC8t95ALENRBg');

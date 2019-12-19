@@ -8,7 +8,7 @@ class SearchPage extends Page {
 
     static content = {
         searchForm() { $("form[action='${Url.SEARCH_QUOTE}']") }
-        searchResult() { $('#search-result') }
+        searchResult() { $('#search-result-total') }
         searchInputField() { searchForm.find('input[name="query"]') }
         searchSubmitButton() { searchForm.find('input[type="submit"]') }
     }
@@ -21,7 +21,7 @@ class SearchPage extends Page {
 
     def total() {
         return searchResult
-                .find('p > small')
+                .find('p > span')
                 .text()
                 .find(/\d+/)
                 .toInteger()

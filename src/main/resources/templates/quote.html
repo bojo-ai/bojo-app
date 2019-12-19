@@ -7,24 +7,39 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <div>
-        <blockquote><p th:text="${quote.value}"/></blockquote>
-        <dl class="meta">
-            <dt>Appeared at:</dt>
-            <dd>
-                <span th:text="${#calendars.day(quote.appearedAt)}"/>
-                <span th:text="${#calendars.monthName(quote.appearedAt)}"/>
-                <span th:text="${#calendars.year(quote.appearedAt)}"/>
-            </dd>
-            <dt th:if="${not #lists.isEmpty(quote.tags)}">Tags</dt>
-            <dd th:if="${not #lists.isEmpty(quote.tags)}">
-                <a th:each="tag : ${quote.tags}" th:href="'/tag/' + ${tag.value}" th:text="${tag.value}"/>
-            </dd>
-            <dt th:if="${not #lists.isEmpty(quote.source)}">Source</dt>
-            <dd th:if="${not #lists.isEmpty(quote.source)}">
-                <a th:each="source : ${quote.source}" th:href="${source.url}" rel="nofollow" target="_blank">here</a>
-            </dd>
-        </dl>
+    <div class="relative max-w-xl mx-auto py-16 mt-10 mb-20">
+        <div class="text-center">
+            <figure>
+                <blockquote class="text-2xl sm:text-3xl mx-auto italic mb-4">
+                    <div class="absolute -mt-10 -ml-12">
+                        <svg class="h-8 w-8 sm:h-12 sm:w-12" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M30.216 9H35c-2.591 4.338-4.385 8.474-5.282 12.307h4.784L32.907 32H22.542l.697-4.842C24.435 19.289 27.226 13.237 30.216 9zM12.674 9h4.884c-2.69 4.338-4.485 8.474-5.382 12.307h4.784L15.365 32H5l.698-4.842C6.894 19.289 9.684 13.237 12.674 9z" fill="#6b46c1" fill-rule="evenodd"></path>
+                        </svg>
+                    </div>
+
+                    <p th:text="${quote.value}"/>
+
+                    <div class="absolute right-0 -mr-10">
+                        <svg class="h-8 w-8 sm:h-12 sm:w-12" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.784 32H5c2.591-4.338 4.385-8.474 5.282-12.307H5.498L7.093 9h10.365l-.697 4.842C15.565 21.711 12.774 27.763 9.784 32zm17.542 0h-4.884c2.69-4.338 4.485-8.474 5.382-12.307H23.04L24.635 9H35l-.698 4.842C33.106 21.711 30.316 27.763 27.326 32z" fill="#6b46c1" fill-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </blockquote>
+                <figcaption class="uppercase tracking-wide font-bold text-lg">
+                    <p th:text="${quote.author.name}"/>
+                    <p class="text-sm text-gray-500 mt-5">
+                        <span th:text="${#calendars.day(quote.appearedAt)}"/>
+                        <span th:text="${#calendars.monthName(quote.appearedAt)}"/>
+                        <span th:text="${#calendars.year(quote.appearedAt)}"/>
+                        <a th:each="source : ${quote.source}" th:href="${source.url}" rel="nofollow" target="_blank" class="hover:text-purple-700 no-underline">(source)</a>
+                    </p>
+                    <ul class="text-sm text-gray-400" th:if="${not #lists.isEmpty(quote.tags)}">
+                        <li class="inline">Tagged with:</li>
+                        <li class="inline" th:each="tag : ${quote.tags}"><a class="hover:text-purple-700 no-underline" th:href="'/tag/' + ${tag.value}" th:text="${tag.value}"/></li>
+                    </ul>
+                </figcaption>
+            </figure>
+        </div>
     </div>
 </div>
 </body>
