@@ -1,35 +1,50 @@
 package ai.bojo.app.search
 
+
 import ai.bojo.app.BaseSpecification
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
-import spock.lang.Subject
+import ai.bojo.app.Url
+import org.springframework.http.HttpHeaders
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 class SearchControllerSpec extends BaseSpecification {
 
-    @Autowired
-    @Subject
-    SearchController controller
-
     def 'should find "PageModel" by query'() {
         given:
-        def acceptHeader = MediaType.APPLICATION_JSON_VALUE
         def pageNumber = 0
         def query = 'Elvis'
 
+        and:
+        def req = get("${Url.SEARCH_QUOTE}?query=${query}&page=${pageNumber}")
+                .accept(acceptHeader)
+                .header('Origin', '*')
+
         when:
-        def response = controller.quote(acceptHeader, query, pageNumber)
+        def res = mvc.perform(req)
 
         then:
-        response.count == 1
-        response.embedded != null
-        response.links != null
-        response.total == 1
+        res.andExpect(status().isOk())
 
-        response.getLink("self").get().getHref() == 'http://localhost/search/quote?query=Elvis&page=0'
-        response.getLink("first").get().getHref() == 'http://localhost/search/quote?query=Elvis&page=0'
-        response.getLink("prev").get().getHref() == 'http://localhost/search/quote?query=Elvis&page=0'
-        response.getLink("next").get().getHref() == 'http://localhost/search/quote?query=Elvis&page=1'
-        response.getLink("last").get().getHref() == 'http://localhost/search/quote?query=Elvis&page=1'
+        and: 'headers are correct'
+        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, 'true'))
+        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, '*'))
+        res.andExpect(header().string(HttpHeaders.CONTENT_TYPE, acceptHeader))
+
+        and:
+        res.andExpect(jsonPath('$._embedded.quotes').hasJsonPath())
+        res.andExpect(jsonPath('$._links.first.href').hasJsonPath())
+        res.andExpect(jsonPath('$._links.last.href').hasJsonPath())
+        res.andExpect(jsonPath('$._links.next.href').hasJsonPath())
+        res.andExpect(jsonPath('$._links.prev.href').hasJsonPath())
+        res.andExpect(jsonPath('$._links.self.href').hasJsonPath())
+        res.andExpect(jsonPath('$.count').hasJsonPath())
+        res.andExpect(jsonPath('$.total').hasJsonPath())
+
+        where:
+        acceptHeader << [
+                'application/hal+json',
+                'application/json'
+        ]
     }
 }

@@ -1,10 +1,14 @@
 package ai.bojo.app.quote
 
 import ai.bojo.app.Url
+import ai.bojo.app.author.AuthorRepository
 import ai.bojo.app.exception.EntityNotFoundException
+import ai.bojo.app.tag.TagRepository
 import org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 
@@ -12,21 +16,58 @@ import org.springframework.web.servlet.ModelAndView
 @RestController
 class QuoteController(
         private val assembler: QuoteModelAssembler,
-        private val repository: QuoteRepository
+        private val authorRepository: AuthorRepository,
+        private val repository: QuoteRepository,
+        private val service: QuoteService,
+        private val tagRepository: TagRepository
 ) {
 
     @ResponseBody
     @RequestMapping(
-            headers = [
-                "${HttpHeaders.ACCEPT}=${MediaType.APPLICATION_JSON_VALUE}"
-            ],
+            headers = ["${HttpHeaders.ACCEPT}=${MediaType.APPLICATION_JSON_VALUE}"],
             method = [RequestMethod.POST],
             produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun create(@RequestBody quote: QuoteEntity): QuoteModel {
-        val entity = repository.saveAndFlush(quote)
+    fun create(
+            @RequestHeader(HttpHeaders.ACCEPT) acceptHeader: String,
+            @RequestBody quote: QuoteEntity
+    ): ResponseEntity<QuoteModel> {
+        val entity = service.save(quote)
 
-        return assembler.toModel(entity)
+        return ResponseEntity(
+                assembler.toModel(entity),
+                HttpStatus.CREATED
+        )
+    }
+
+    @RequestMapping(
+            headers = ["${HttpHeaders.ACCEPT}=${MediaType.APPLICATION_FORM_URLENCODED_VALUE}"],
+            method = [RequestMethod.POST],
+            produces = [MediaType.TEXT_HTML_VALUE]
+    )
+    fun create(@ModelAttribute quote: QuoteEntity): ModelAndView {
+        val entity = service.save(quote)
+
+        return ModelAndView("quote")
+                .addObject("quote", entity)
+    }
+
+    @RequestMapping(
+            headers = [
+                "${HttpHeaders.ACCEPT}=${MediaType.TEXT_HTML_VALUE}"
+            ],
+            method = [RequestMethod.GET],
+            produces = [MediaType.TEXT_HTML_VALUE],
+            value = ["/new"]
+    )
+    fun create(): ModelAndView {
+        val authors = authorRepository.findAll()
+        val tags = tagRepository.findAll()
+
+        return ModelAndView("quote/new")
+                .addObject("authors", authors)
+                .addObject("quote", QuoteEntity())
+                .addObject("tags", tags)
     }
 
     @ResponseBody

@@ -5,7 +5,9 @@ import ai.bojo.app.exception.EntityNotFoundException
 import ai.bojo.app.search.PageModel
 import org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
 
@@ -24,10 +26,13 @@ class TagController(
             method = [RequestMethod.POST],
             produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun create(@RequestBody tag: TagEntity): TagModel {
+    fun create(@RequestBody tag: TagEntity): ResponseEntity<TagModel> {
         val entity = repository.saveAndFlush(tag)
 
-        return assembler.toModel(entity)
+        return ResponseEntity(
+                assembler.toModel(entity),
+                HttpStatus.CREATED
+        )
     }
 
     @ResponseBody

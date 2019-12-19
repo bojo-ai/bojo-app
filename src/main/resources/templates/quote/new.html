@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layouts/default}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Add new quote</title>
+    <meta name="description" content="Add new quote"/>
+    <link href="/quote/new" rel="canonical"/>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="center">
+        <h1>Add a new quote</h1>
+    </section>
+    <section>
+        <form action="#" th:action="@{/quote}" th:object="${quote}" method="post">
+            <fieldset>
+                <label for="author">Author</label>
+                <select id="author" th:field="*{author}">
+                    <option
+                            th:each="author: ${authors}"
+                            th:text="${author.name}"
+                            th:value="${author.authorId}"
+                    />
+                </select>
+                <ul class="checkboxes">
+                    <li><strong>Tags:</strong><small>(create a new one <a href="/tag/new">here</a>)</small></li>
+                    <li th:each="tag : ${tags}">
+                        <label class="control checkbox" th:for="${tag.tagId}" th:text="${tag.value}">
+                            <input type="checkbox" th:field="*{tags}" th:value="${tag.tagId}" th:id="${tag.tagId}"/>
+                            <span class="control-indicator"></span>
+                        </label>
+                    </li>
+                </ul>
+                <p>
+                    <label for="quote-value" content="Value"/>
+                    <input id="quote-value" type="text" th:field="*{value}"/>
+                </p>
+                <p>
+                    <input type="submit" value="Submit"/>
+                    <input type="reset" value="Reset"/>
+                </p>
+            </fieldset>
+        </form>
+    </section>
+</div>
+</body>
+</html>

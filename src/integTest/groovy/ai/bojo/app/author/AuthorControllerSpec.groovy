@@ -1,45 +1,62 @@
 package ai.bojo.app.author
 
 import ai.bojo.app.BaseSpecification
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
-import spock.lang.Subject
+import ai.bojo.app.Url
+import org.springframework.http.HttpHeaders
 
-@SpringBootTest
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+
 class AuthorControllerSpec extends BaseSpecification {
 
-    @Autowired
-    @Subject
-    AuthorController controller
-
-    def 'should find "AuthorEntity" by id'() {
+    void 'should find an author by id'() {
         given:
-        def acceptHeader = MediaType.APPLICATION_JSON_VALUE
         def id = 'wVE8Y7BoRKCBkxs1JkqBvw'
+        def req = get("${Url.AUTHOR}/${id}")
+                .accept(acceptHeader)
+                .header('Origin', '*')
 
         when:
-        def response = controller.findById(acceptHeader, id)
+        def res = mvc.perform(req)
 
         then:
-        response.authorId == id
-        response.bio == null
-        response.createdAt != null
-        response.name == 'Boris Johnson'
-        response.slug == 'boris-johnson'
-        response.updatedAt != null
+        res.andExpect(status().isOk())
+
+        and: 'headers are correct'
+        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, 'true'))
+        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, '*'))
+        res.andExpect(header().string(HttpHeaders.CONTENT_TYPE, acceptHeader))
+
+        and: 'body has an author'
+        res.andExpect(jsonPath('$._links.self.href').value('http://localhost/author/wVE8Y7BoRKCBkxs1JkqBvw'))
+        res.andExpect(jsonPath('$.author_id').value('wVE8Y7BoRKCBkxs1JkqBvw'))
+        res.andExpect(jsonPath('$.bio').value(null))
+        res.andExpect(jsonPath('$.created_at').hasJsonPath())
+        res.andExpect(jsonPath('$.name').value('Boris Johnson'))
+        res.andExpect(jsonPath('$.slug').value('boris-johnson'))
+        res.andExpect(jsonPath('$.updated_at').hasJsonPath())
+
+        where:
+        acceptHeader << [
+                'application/hal+json',
+                'application/json'
+        ]
     }
 
-    def 'should report an error if "AuthorEntity" does not exist'() {
+    void 'should report an error if "Author" does not exist'() {
         given:
-        def acceptHeader = MediaType.APPLICATION_JSON_VALUE
         def id = 'does-not-exist'
+        def req = get("${Url.AUTHOR}/${id}")
+                .accept(acceptHeader)
+                .header('Origin', '*')
 
-        when:
-        controller.findById(acceptHeader, id)
+        expect:
+        mvc.perform(req).andExpect(status().isNotFound())
 
-        then:
-        def exception = thrown(ai.bojo.app.exception.EntityNotFoundException)
-        exception.message == 'Author with id "does-not-exist" not found.'
+        where:
+        acceptHeader << [
+                'application/hal+json',
+                'application/json'
+        ]
     }
 }

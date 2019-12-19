@@ -229,8 +229,8 @@
 							"script": {
 								"id": "081927c6-f107-4298-bc63-9c70d474ccf0",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
 									"});",
 									"",
 									"pm.test(\"Headers are correct\", function () {",
@@ -676,10 +676,6 @@
 							"script": {
 								"id": "f9f6f94d-4456-4438-ac0d-06461769b7dc",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"  pm.response.to.have.status(200);",
-									"});",
-									"",
 									"pm.test(\"Headers are correct\", function () {",
 									"  pm.response.to.be.header(",
 									"    \"Content-Type\",",
@@ -1178,8 +1174,8 @@
 							"script": {
 								"id": "081927c6-f107-4298-bc63-9c70d474ccf0",
 								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
 									"});",
 									"",
 									"pm.test(\"Headers are correct\", function () {",

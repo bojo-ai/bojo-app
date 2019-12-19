@@ -19,7 +19,7 @@ open class QuoteEntity(
         open var appearedAt: Timestamp? = null,
 
         @get:JoinColumn(name = "author_id", referencedColumnName = "author_id")
-        @get:ManyToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+        @get:ManyToOne(cascade = [CascadeType.MERGE, CascadeType.REFRESH], fetch = FetchType.EAGER)
         open var author: AuthorEntity? = null,
 
         @get:Basic
@@ -34,7 +34,7 @@ open class QuoteEntity(
         open var quoteId: String? = null,
 
         @get:JoinColumn(name = "quote_source_id", referencedColumnName = "quote_source_id")
-        @get:ManyToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+        @get:ManyToOne(cascade = [CascadeType.MERGE, CascadeType.REFRESH], fetch = FetchType.EAGER)
         open var source: QuoteSourceEntity? = null,
 
         @get:JoinTable(
@@ -42,7 +42,7 @@ open class QuoteEntity(
                 joinColumns = [JoinColumn(name = "quote_id")],
                 inverseJoinColumns = [JoinColumn(name = "tag_id")]
         )
-        @get:OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+        @get:OneToMany(cascade = [CascadeType.MERGE, CascadeType.REFRESH], fetch = FetchType.EAGER)
         open var tags: List<TagEntity>? = emptyList(),
 
         @get:Basic

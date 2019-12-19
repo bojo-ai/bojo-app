@@ -1,46 +1,62 @@
 package ai.bojo.app.quote_source
 
 import ai.bojo.app.BaseSpecification
-import ai.bojo.app.exception.EntityNotFoundException
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
-import spock.lang.Subject
+import ai.bojo.app.Url
+import org.springframework.http.HttpHeaders
 
-@SpringBootTest
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+
 class QuoteSourceControllerSpec extends BaseSpecification {
 
-    @Autowired
-    @Subject
-    QuoteSourceController controller
-
-    def 'should find "QuoteSourceEntity" by id'() {
+    void 'should find a "QuoteSourceEntity" by id'() {
         given:
-        def acceptHeader = MediaType.APPLICATION_JSON_VALUE
         def id = 'in8rU9GMRxeeweuLiqz9yg'
+        def req = get("${Url.QUOTE_SOURCE}/${id}")
+                .accept(acceptHeader)
+                .header('Origin', '*')
 
         when:
-        def response = controller.findById(acceptHeader, id)
+        def res = mvc.perform(req)
 
         then:
-        response.createdAt != null
-        response.filename == null
-        response.quoteSourceId == id
-        response.remarks == 'The Big Book of Boris'
-        response.updatedAt != null
-        response.url == 'https://www.dailymail.co.uk'
+        res.andExpect(status().isOk())
+
+        and: 'headers are correct'
+        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, 'true'))
+        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, '*'))
+        res.andExpect(header().string(HttpHeaders.CONTENT_TYPE, acceptHeader))
+
+        and: 'body has a quote source'
+        res.andExpect(jsonPath('$._links.self.href').hasJsonPath())
+        res.andExpect(jsonPath('$.created_at').hasJsonPath())
+        res.andExpect(jsonPath('$.filename').value(null))
+        res.andExpect(jsonPath('$.quote_source_id').hasJsonPath())
+        res.andExpect(jsonPath('$.remarks').value('The Big Book of Boris'))
+        res.andExpect(jsonPath('$.updated_at').hasJsonPath())
+        res.andExpect(jsonPath('$.url').value('https://www.dailymail.co.uk'))
+
+        where:
+        acceptHeader << [
+                'application/hal+json',
+                'application/json'
+        ]
     }
 
-    def 'should report an error if "QuoteSourceEntity" does not exist'() {
+    void 'should report an error if "QuoteSourceEntity" does not exist'() {
         given:
-        def acceptHeader = MediaType.APPLICATION_JSON_VALUE
         def id = 'does-not-exist'
+        def req = get("${Url.QUOTE_SOURCE}/${id}")
+                .accept(acceptHeader)
+                .header('Origin', '*')
 
-        when:
-        controller.findById(acceptHeader, id)
+        expect:
+        mvc.perform(req).andExpect(status().isNotFound())
 
-        then:
-        def exception = thrown(EntityNotFoundException)
-        exception.message == 'QuoteSource with id "does-not-exist" not found.'
+        where:
+        acceptHeader << [
+                'application/hal+json',
+                'application/json'
+        ]
     }
 }

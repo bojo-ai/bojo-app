@@ -1,33 +1,43 @@
 package ai.bojo.app.random
 
 import ai.bojo.app.BaseSpecification
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
-import spock.lang.Subject
-import spock.lang.Unroll
+import ai.bojo.app.Url
+import org.springframework.http.HttpHeaders
 
-@SpringBootTest
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+
 class RandomControllerSpec extends BaseSpecification {
 
-    @Autowired
-    @Subject
-    RandomController controller
-
-    @Unroll
-    def 'should return a random "QuoteModel"'() {
+    void 'should return a random "QuoteEntity"'() {
         given:
-        def acceptHeader = MediaType.APPLICATION_JSON_VALUE
+        def req = get("${Url.RANDOM}/quote")
+                .accept(acceptHeader)
+                .header('Origin', '*')
 
         when:
-        def response = controller.random(acceptHeader)
+        def res = mvc.perform(req)
 
         then:
-        response.appearedAt != null
-        response.createdAt != null
-        response.updatedAt != null
-        response.quoteId != null
-        response.tags.get(0) != null
-        response.value != null
+        res.andExpect(status().isOk())
+
+        and: 'headers are correct'
+        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, 'true'))
+        res.andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, '*'))
+        res.andExpect(header().string(HttpHeaders.CONTENT_TYPE, acceptHeader))
+
+        and: 'body has a quote'
+        res.andExpect(jsonPath('$.appeared_at').hasJsonPath())
+        res.andExpect(jsonPath('$.created_at').hasJsonPath())
+        res.andExpect(jsonPath('$.quote_id').hasJsonPath())
+        res.andExpect(jsonPath('$.tags').hasJsonPath())
+        res.andExpect(jsonPath('$.updated_at').hasJsonPath())
+        res.andExpect(jsonPath('$.value').hasJsonPath())
+
+        where:
+        acceptHeader << [
+                'application/hal+json',
+                'application/json'
+        ]
     }
 }

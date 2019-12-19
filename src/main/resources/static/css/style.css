@@ -66,6 +66,21 @@ header img {
     width: 96%;
 }
 
+form ul {
+    display: inline;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+form ul li:first-of-type {
+    font-weight: bold;
+}
+
+form label {
+    font-weight: bold;
+}
+
 @media only screen and (min-width: 360px) {
     header img {
         padding: 0;
