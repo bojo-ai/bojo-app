@@ -46,7 +46,7 @@ jobs:
       - run:
           name: Build and push image
           command: |
-            ./gradlew clean dockerPushHerokuProduction
+            ./gradlew clean dockerPushHerokuProduction --info
       - run:
           name: Release
           command: |
@@ -77,7 +77,7 @@ jobs:
       - run:
           name: Build and push image
           command: |
-            ./gradlew clean dockerPushHerokuStaging
+            ./gradlew clean dockerPushHerokuStaging --info
       - run:
           name: Release
           command: |
