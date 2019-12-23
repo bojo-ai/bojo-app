@@ -46,8 +46,7 @@ jobs:
       - run:
           name: Build and push image
           command: |
-            ./gradlew clean dockerTagHerokuProduction
-            docker push registry.heroku.com/bojo-prod/web
+            ./gradlew clean dockerPushHerokuProduction
       - run:
           name: Release
           command: |
@@ -78,8 +77,7 @@ jobs:
       - run:
           name: Build and push image
           command: |
-            ./gradlew clean dockerTagHerokuStaging
-            docker push registry.heroku.com/bojo-stage/web
+            ./gradlew clean dockerPushHerokuStaging
       - run:
           name: Release
           command: |

@@ -2,7 +2,7 @@ FROM centos:centos7
 
 ENV JAVA_VERSION="1.8.0-openjdk"
 
-ENV IMAGEMAGICK_VERSION="7.0.9-8"
+ENV IMAGEMAGICK_VERSION="7.0.9-10"
 ENV IMAGEMAGICK_LIB_RPM_URL="https://imagemagick.org/download/linux/CentOS/x86_64/ImageMagick-libs-${IMAGEMAGICK_VERSION}.x86_64.rpm"
 ENV IMAGEMAGICK_RPM_URL="https://imagemagick.org/download/linux/CentOS/x86_64/ImageMagick-${IMAGEMAGICK_VERSION}.x86_64.rpm"
 
