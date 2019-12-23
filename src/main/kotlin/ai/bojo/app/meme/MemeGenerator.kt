@@ -9,6 +9,9 @@ import java.util.concurrent.TimeUnit
 @Service
 class MemeGenerator {
 
+    val border = 70
+    val height = 800
+    val width = 800
     val colorBackground = "#0F3244"
     val colorBlue = "#58C0F9"
     val colorWhite = "#FFFFFF"
@@ -37,7 +40,10 @@ class MemeGenerator {
         }
     }
 
-    fun generate(outputStream: OutputStream, quote: QuoteEntity) {
+    fun generate(
+            outputStream: OutputStream,
+            quote: QuoteEntity
+    ) {
         val text = when {
             !quote.value.isNullOrEmpty() -> quote.value.toString()
             else -> ""
@@ -50,11 +56,7 @@ class MemeGenerator {
                 "-font", font.path,
                 "-gravity", "center",
                 "-quality", "85",
-                "-size", "1024x768!",
-
-                // Add top border
-                "-fill", colorBlue,
-                "-draw", "rectangle 0,5 1024,0",
+                "-size", "${height - (2 * border)}x${width}!",
 
                 // Add logo
                 "-draw", "image over 0,-195 0,0 ${logo.path}",
@@ -66,10 +68,16 @@ class MemeGenerator {
                 "-pointsize", "28",
                 "-style", "normal",
                 "caption:${text}",
+                "-bordercolor", colorWhite,
+                "-border", "${border}x0",
 
                 // Add website
                 "-fill", colorBlue,
                 "-annotate", "+0+300", "bojo.ai",
+
+                // Add top border
+                "-fill", colorBlue,
+                "-draw", "rectangle 0,5 1024,0",
 
                 // Pipe to stdout
                 "jpeg:-"
