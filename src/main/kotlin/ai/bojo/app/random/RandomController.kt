@@ -5,6 +5,7 @@ import ai.bojo.app.meme.MemeGenerator
 import ai.bojo.app.quote.QuoteModel
 import ai.bojo.app.quote.QuoteModelAssembler
 import ai.bojo.app.quote.QuoteRepository
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.hateoas.MediaTypes
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -21,6 +22,7 @@ class RandomController(
         private val repository: QuoteRepository
 ) {
 
+    @Operation(summary = "Retrieve a random quote meme", tags = ["quote"])
     @ResponseBody
     @RequestMapping(
             headers = [
@@ -47,6 +49,7 @@ class RandomController(
         )
     }
 
+    @Operation(summary = "Retrieve a random quote", tags = ["quote"])
     @ResponseBody
     @RequestMapping(
             headers = [

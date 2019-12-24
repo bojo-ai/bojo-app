@@ -3,6 +3,8 @@ package ai.bojo.app.tag
 import ai.bojo.app.Url
 import ai.bojo.app.exception.EntityNotFoundException
 import ai.bojo.app.search.PageModel
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -13,11 +15,13 @@ import org.springframework.web.servlet.ModelAndView
 
 @RequestMapping(value = [Url.TAG])
 @RestController
+@Tag(name = "tag", description = "Service to retrieve and create tags")
 class TagController(
         private val assembler: TagModelAssembler,
         private val repository: TagRepository
 ) {
 
+    @Operation(summary = "Create a new tag", tags = ["tag"])
     @ResponseBody
     @RequestMapping(
             headers = [
@@ -35,6 +39,7 @@ class TagController(
         )
     }
 
+    @Operation(summary = "Find all tags", tags = ["tag"])
     @ResponseBody
     @RequestMapping(
             headers = [
@@ -52,6 +57,7 @@ class TagController(
         return assembler.toPageModel(result)
     }
 
+    @Operation(summary = "Find a tag by its id", tags = ["tag"])
     @ResponseBody
     @RequestMapping(
             headers = [
@@ -73,6 +79,7 @@ class TagController(
         return assembler.toModel(entity)
     }
 
+    @Operation(summary = "Find a tag by its value", tags = ["tag"])
     @ResponseBody
     @RequestMapping(
             headers = [

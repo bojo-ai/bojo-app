@@ -3,6 +3,7 @@ package ai.bojo.app.search
 import ai.bojo.app.Url
 import ai.bojo.app.quote.QuoteEntity
 import ai.bojo.app.quote.QuoteRepository
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -22,6 +23,7 @@ class SearchController(
         private val repository: QuoteRepository
 ) {
 
+    @Operation(summary = "Search quotes by query", tags = ["quote"])
     @ResponseBody
     @RequestMapping(
             headers = [

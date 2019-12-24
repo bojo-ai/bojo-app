@@ -1,5 +1,5 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.moowork.gradle.node.npm.NpmTask
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.energizedwork.webdriver-binaries") version "1.4"
@@ -59,6 +59,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.hateoas:spring-hateoas:1.0.1.RELEASE")
+    implementation("org.springdoc:springdoc-openapi-core:1.1.49")
 
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
@@ -138,7 +139,7 @@ tasks {
         nodeModulesDir = file("$projectDir/src/main/node/node_modules")
     }
 
-    processResources{
+    processResources {
         dependsOn("processNodeResources")
     }
 

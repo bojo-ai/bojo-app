@@ -2,11 +2,14 @@ package ai.bojo.app.quote_source
 
 import ai.bojo.app.Url
 import ai.bojo.app.exception.EntityNotFoundException
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 
+@Tag(name = "quote-source", description = "Service to retrieve and create quote sources")
 @RequestMapping(value = [Url.QUOTE_SOURCE])
 @RestController
 class QuoteSourceController(
@@ -14,6 +17,7 @@ class QuoteSourceController(
         private val repository: QuoteSourceRepository
 ) {
 
+    @Operation(summary = "Find a quote sources by its id", tags = ["quote-source"])
     @ResponseBody
     @RequestMapping(
             headers = [
