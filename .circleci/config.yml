@@ -189,11 +189,13 @@ workflows:
           filters:
             branches:
               only: master
+      - hold:
+          type: approval
+          requires:
+            - release-staging
       - release-production:
           requires:
-            - test-integration
-            - test-postman
-            - test-unit
+            - hold
           filters:
             branches:
               only: master
