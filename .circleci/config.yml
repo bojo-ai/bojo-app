@@ -189,13 +189,9 @@ workflows:
           filters:
             branches:
               only: master
-      - hold:
-          type: approval
-          requires:
-            - release-staging
       - release-production:
           requires:
-            - hold
+            - release-staging
           filters:
             branches:
               only: master
