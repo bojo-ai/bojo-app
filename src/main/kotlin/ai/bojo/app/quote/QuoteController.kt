@@ -3,6 +3,7 @@ package ai.bojo.app.quote
 import ai.bojo.app.Url
 import ai.bojo.app.author.AuthorRepository
 import ai.bojo.app.exception.EntityNotFoundException
+import ai.bojo.app.meme.MemeGenerator
 import ai.bojo.app.tag.TagRepository
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 
 @RequestMapping(value = [Url.QUOTE])
 @RestController
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView
 class QuoteController(
         private val assembler: QuoteModelAssembler,
         private val authorRepository: AuthorRepository,
+        private val memeGenerator: MemeGenerator,
         private val repository: QuoteRepository,
         private val service: QuoteService,
         private val tagRepository: TagRepository
@@ -111,5 +114,34 @@ class QuoteController(
         }
 
         return assembler.toModel(entity)
+    }
+
+    @Operation(summary = "Retrieve a quote meme by its id", tags = ["quote"])
+    @ResponseBody
+    @RequestMapping(
+            headers = [
+                "${HttpHeaders.ACCEPT}=${MediaType.IMAGE_JPEG_VALUE}"
+            ],
+            method = [RequestMethod.GET],
+            value = ["/{id}/meme"]
+    )
+    fun meme(@PathVariable id: String): ResponseEntity<StreamingResponseBody> {
+        val entity = repository.findById(id).orElseThrow {
+            EntityNotFoundException("Quote with id \"$id\" not found.")
+        }
+
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.IMAGE_JPEG
+        headers.set("X-Quote-Id", entity.quoteId)
+
+        val stream = StreamingResponseBody {
+            memeGenerator.generate(it, entity)
+        }
+
+        return ResponseEntity(
+                stream,
+                headers,
+                HttpStatus.OK
+        )
     }
 }
