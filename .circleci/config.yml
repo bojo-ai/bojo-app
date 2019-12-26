@@ -31,6 +31,35 @@ jobs:
           paths:
             - build
 
+  publish-docs:
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "2c:91:f3:64:03:1d:11:6f:b9:04:b1:91:4e:d2:4b:be"
+      - run:
+          name: Configure git
+          command: |
+            git config user.email "ci-build@bojo.ai"
+            git config user.name "ci-build"
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm set prefix=/home/circleci/npm
+            npm install --silent --global gh-pages@2.1.1 spectacle-docs@1.0.7
+      - run:
+          name: Build api documentation
+          command: |
+            curl --silent "https://www.bojo.ai/documentation" > "/tmp/documentation.json"
+            ~/npm/bin/spectacle --target-dir "docs/" "/tmp/documentation.json"
+            echo "developers.bojo.ai" > docs/CNAME
+      - run:
+          name: Deploy api documentation
+          command: |
+            ~/npm/bin/gh-pages --dist docs/ --message '[skip ci] Update api documentation'
+
   release-production:
     docker:
       - image: circleci/openjdk:11.0.3-jdk-stretch
@@ -192,6 +221,12 @@ workflows:
       - release-production:
           requires:
             - release-staging
+          filters:
+            branches:
+              only: master
+      - publish-docs:
+          requires:
+            - release-production
           filters:
             branches:
               only: master
