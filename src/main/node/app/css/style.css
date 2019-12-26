@@ -31,3 +31,9 @@ hr.uk-flag:after {
     position: absolute;
     width: 1em;
 }
+
+.underline-purple {
+    text-decoration: none;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(70%, transparent), color-stop(70%, rgba(101, 125, 225, .4)));
+    background-image: linear-gradient(180deg, transparent 70%, rgba(101, 125, 225, .4) 0);
+}
