@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.scheduling.annotation.Async
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody
 
@@ -22,6 +23,7 @@ class RandomController(
         private val repository: QuoteRepository
 ) {
 
+    @Async
     @Operation(summary = "Retrieve a random quote meme", tags = ["quote"])
     @ResponseBody
     @RequestMapping(
