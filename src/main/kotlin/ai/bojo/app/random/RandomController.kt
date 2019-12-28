@@ -34,7 +34,7 @@ class RandomController(
             value = ["/meme"]
     )
     fun meme(@RequestHeader(HttpHeaders.ACCEPT) acceptHeader: String): ResponseEntity<StreamingResponseBody> {
-        var quote = repository.randomQuote().get()
+        val quote = repository.randomQuote().get()
 
         val headers = HttpHeaders()
         headers.contentType = MediaType.IMAGE_JPEG

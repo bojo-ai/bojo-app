@@ -4,7 +4,6 @@ import ai.bojo.app.quote.QuoteEntity
 import org.springframework.stereotype.Service
 import java.io.File
 import java.io.OutputStream
-import java.util.concurrent.TimeUnit
 
 @Service
 class MemeGenerator {
@@ -21,7 +20,7 @@ class MemeGenerator {
     private fun execute(command: List<String>, outputStream: OutputStream) {
         val process = ProcessBuilder(command)
                 .start()
-                .also { it.waitFor(15L, TimeUnit.SECONDS) }
+                .also { it.waitFor() }
 
         if (process.exitValue() != 0) {
             val stderr = process
