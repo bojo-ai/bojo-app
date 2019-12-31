@@ -22,12 +22,12 @@ class MemeGenerator {
                 .start()
                 .also { it.waitFor() }
 
-        if (process.exitValue() != 0) {
-            val stderr = process
-                    .errorStream
-                    .bufferedReader()
-                    .use { it.readText() }
+        val stderr = process
+                .errorStream
+                .bufferedReader()
+                .use { it.readText() }
 
+        if (stderr.isNotEmpty()) {
             throw MemeException(stderr)
         }
 
