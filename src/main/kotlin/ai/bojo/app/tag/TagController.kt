@@ -52,7 +52,7 @@ class TagController(
     fun findAll(
             @RequestHeader(HttpHeaders.ACCEPT) acceptHeader: String
     ): PageModel {
-        val result: List<TagEntity> = repository.findAll()
+        val result: List<TagEntity> = repository.findByOrderByValueAsc()
 
         return assembler.toPageModel(result)
     }

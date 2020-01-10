@@ -26,7 +26,7 @@ class HomeController(
     )
     fun get(): ModelAndView {
         val quote = quoteRepository.randomQuote().get()
-        val tags = tagRepository.findAll()
+        val tags = tagRepository.findByOrderByValueAsc()
         val tagModels = tagModelAssembler.toCollectionModel(tags)
 
         return ModelAndView("home")
