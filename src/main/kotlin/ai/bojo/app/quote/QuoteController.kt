@@ -80,7 +80,7 @@ class QuoteController(
     )
     fun create(): ModelAndView {
         val authors = authorRepository.findAll()
-        val tags = tagRepository.findAll()
+        val tags = tagRepository.findByOrderByValueAsc()
 
         return ModelAndView("quote/new")
                 .addObject("authors", authors)

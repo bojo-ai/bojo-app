@@ -18,12 +18,14 @@ class QuoteService(
         if (quoteEntity.author?.authorId == null) {
             quoteEntity.author = authorRepository.saveAndFlush(quoteEntity.author!!)
         }
-        if (quoteEntity.source?.quoteSourceId == null && quoteEntity.source?.url != null) {
+        if (quoteEntity.source?.quoteSourceId == null && !quoteEntity.source?.url.isNullOrBlank()) {
             quoteSourceRepository.saveAndFlush(quoteEntity.source!!)
+        } else {
+            quoteEntity.source = null
         }
 
         quoteEntity.tags?.stream()
-                ?.filter { tag -> tag.tagId == null && tag.value != null }
+                ?.filter { tag -> tag.tagId == null && !tag.value.isNullOrBlank() }
                 ?.map { tag -> tagRepository.saveAndFlush(tag) }
                 ?.toList()
 

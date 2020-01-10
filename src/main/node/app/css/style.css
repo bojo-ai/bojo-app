@@ -37,3 +37,7 @@ hr.uk-flag:after {
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(70%, transparent), color-stop(70%, rgba(101, 125, 225, .4)));
     background-image: linear-gradient(180deg, transparent 70%, rgba(101, 125, 225, .4) 0);
 }
+
+.custom-label input:checked + svg {
+    display: block !important;
+}

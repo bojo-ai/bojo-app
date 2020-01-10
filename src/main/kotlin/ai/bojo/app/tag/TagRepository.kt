@@ -7,5 +7,7 @@ import java.util.*
 @Repository
 interface TagRepository : JpaRepository<TagEntity, String> {
 
+    fun findByOrderByValueAsc(): List<TagEntity>
+
     fun findByValue(value: String): Optional<TagEntity>
 }
